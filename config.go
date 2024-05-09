@@ -14,17 +14,18 @@ type Config struct {
 	StdWidth int
 	// Standard height of a captcha image.
 	StdHeight int
+	// API path for get captcha id
+	GetCaptchaIDPath string
+	// API path for resolve captcha
+	ResolveCaptchaPath string
+	// API path for reload captcha
+	ReloadCaptchaPath string
 }
 
-const (
-	// Default number of digits in captcha solution.
-	DefaultLen = 6
-	// The number of captchas created that triggers garbage collection used
-	// by default store.
-	CollectNum = 100
-	// Expiration time of captchas used by default store.
-	Expiration = 10 * time.Minute
-	// Standard width and height of a captcha image.
-	StdWidth  = 240
-	StdHeight = 80
-)
+var ConfigDefault = Config{
+	DefaultLen: 6,
+	CollectNum: 100,
+	Expiration: 10 * time.Minute,
+	StdWidth:   240,
+	StdHeight:  80,
+}
