@@ -14,18 +14,18 @@ type Config struct {
 	StdWidth int
 	// Standard height of a captcha image.
 	StdHeight int
-	// API path for get captcha id
-	GetCaptchaIDPath string
+	// API path for retrieve captcha id
+	RetrieveCaptchaIDPath string
 	// API path for resolve captcha
 	ResolveCaptchaPath string
-	// API path for reload captcha
-	ReloadCaptchaPath string
 }
 
 var ConfigDefault = Config{
-	DefaultLen: 6,
-	CollectNum: 100,
-	Expiration: 10 * time.Minute,
-	StdWidth:   240,
-	StdHeight:  80,
+	DefaultLen:            6,
+	CollectNum:            100,
+	Expiration:            10 * time.Minute,
+	StdWidth:              240,
+	StdHeight:             80,
+	RetrieveCaptchaIDPath: "/api/captcha/retrieve-id",
+	ResolveCaptchaPath:    "/api/captcha/resolve",
 }
