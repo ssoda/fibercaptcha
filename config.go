@@ -20,7 +20,7 @@ type Config struct {
 	ResolveCaptchaPath string
 }
 
-var ConfigDefault = Config{
+var ConfigDefault = &Config{
 	DefaultLen:            6,
 	CollectNum:            100,
 	Expiration:            10 * time.Minute,
@@ -28,4 +28,44 @@ var ConfigDefault = Config{
 	StdHeight:             80,
 	RetrieveCaptchaIDPath: "/api/captcha/retrieve-id",
 	ResolveCaptchaPath:    "/api/captcha/resolve",
+}
+
+func configDefault(config ...*Config) *Config {
+	// Return default config if nothing provided
+	if len(config) == 0 {
+		return ConfigDefault
+	}
+
+	// Override default config
+	cfg := config[0]
+
+	if cfg.DefaultLen == 0 {
+		cfg.DefaultLen = ConfigDefault.DefaultLen
+	}
+
+	if cfg.CollectNum == 0 {
+		cfg.CollectNum = ConfigDefault.CollectNum
+	}
+
+	if cfg.Expiration.Minutes() == 0 {
+		cfg.Expiration = ConfigDefault.Expiration
+	}
+
+	if cfg.StdHeight == 0 {
+		cfg.StdHeight = ConfigDefault.StdHeight
+	}
+
+	if cfg.StdWidth == 0 {
+		cfg.StdWidth = ConfigDefault.StdWidth
+	}
+
+	if cfg.RetrieveCaptchaIDPath == "" {
+		cfg.RetrieveCaptchaIDPath = ConfigDefault.RetrieveCaptchaIDPath
+	}
+
+	if cfg.ResolveCaptchaPath == "" {
+		cfg.ResolveCaptchaPath = ConfigDefault.ResolveCaptchaPath
+	}
+
+	return cfg
 }
