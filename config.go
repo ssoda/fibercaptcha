@@ -1,6 +1,14 @@
 package fibercaptcha
 
-import "time"
+import (
+	"log"
+	"os"
+	"time"
+
+	"github.com/redis/go-redis/v9"
+	"github.com/ssoda/captcha"
+	"github.com/ssoda/captcha/store"
+)
 
 type Config struct {
 	// Default number of digits in captcha solution.
@@ -18,6 +26,12 @@ type Config struct {
 	RetrieveCaptchaIDPath string
 	// API path for resolve captcha
 	ResolveCaptchaPath string
+	// logger
+	Logger *log.Logger
+	// redis client
+	RedisClient *redis.Client
+	// redis captcha key prefix
+	RedisCaptchaPrefix string
 }
 
 var ConfigDefault = &Config{
@@ -28,6 +42,8 @@ var ConfigDefault = &Config{
 	StdHeight:             80,
 	RetrieveCaptchaIDPath: "/api/captcha/retrieve-id",
 	ResolveCaptchaPath:    "/api/captcha/resolve",
+	Logger:                log.New(os.Stderr, "", log.LstdFlags),
+	RedisCaptchaPrefix:    "captcha",
 }
 
 func configDefault(config ...*Config) *Config {
@@ -65,6 +81,18 @@ func configDefault(config ...*Config) *Config {
 
 	if cfg.ResolveCaptchaPath == "" {
 		cfg.ResolveCaptchaPath = ConfigDefault.ResolveCaptchaPath
+	}
+
+	if cfg.Logger != nil {
+		cfg.Logger = ConfigDefault.Logger
+	}
+
+	if cfg.RedisCaptchaPrefix == "" {
+		cfg.RedisCaptchaPrefix = ConfigDefault.RedisCaptchaPrefix
+	}
+
+	if cfg.RedisClient != nil {
+		captcha.SetCustomStore(store.NewRedisStoreWithCli(cfg.RedisClient, cfg.Expiration, cfg.Logger, cfg.RedisCaptchaPrefix))
 	}
 
 	return cfg
