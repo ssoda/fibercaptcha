@@ -30,6 +30,8 @@ type Config struct {
 	Logger *log.Logger
 	// redis client
 	RedisClient *redis.Client
+	// redis cluster client
+	RedisClusterClient *redis.ClusterClient
 	// redis captcha key prefix
 	RedisCaptchaPrefix string
 }
@@ -93,6 +95,10 @@ func configDefault(config ...*Config) *Config {
 
 	if cfg.RedisClient != nil {
 		captcha.SetCustomStore(store.NewRedisStoreWithCli(cfg.RedisClient, cfg.Expiration, cfg.Logger, cfg.RedisCaptchaPrefix))
+	}
+
+	if cfg.RedisClusterClient != nil {
+		captcha.SetCustomStore(store.NewRedisClusterStoreWithCli(cfg.RedisClusterClient, cfg.Expiration, cfg.Logger, cfg.RedisCaptchaPrefix))
 	}
 
 	return cfg
