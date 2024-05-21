@@ -9,6 +9,11 @@ type retrieveCaptchaIDOutput struct {
 	CaptchaID string `json:"captcha_id"`
 }
 
+type resolveCaptchInput struct {
+	CaptchaID string `query:"captcha_id"`
+	Reload    string `query:"reload"`
+}
+
 func New(config ...*Config) fiber.Handler {
 	cfg := configDefault(config...)
 
@@ -33,5 +38,10 @@ func retrieveCaptchaID(c *fiber.Ctx, captchaLen int) error {
 }
 
 func resolveCaptcha(c *fiber.Ctx) error {
+	r := new(resolveCaptchInput)
+	if err := c.QueryParser(r); err != nil {
+		return c.SendStatus(fiber.StatusBadRequest)
+	}
+
 	return c.Next()
 }
