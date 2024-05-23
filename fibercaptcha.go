@@ -38,10 +38,20 @@ func retrieveCaptchaID(c *fiber.Ctx, captchaLen int) error {
 }
 
 func resolveCaptcha(c *fiber.Ctx) error {
-	r := new(resolveCaptchInput)
-	if err := c.QueryParser(r); err != nil {
+	input := new(resolveCaptchInput)
+	if err := c.QueryParser(input); err != nil {
 		return c.SendStatus(fiber.StatusBadRequest)
 	}
 
-	return c.Next()
+	if input.CaptchaID == "" {
+		c.SendString("captcha id required")
+		return c.SendStatus(fiber.StatusBadRequest)
+	}
+
+	if input.Reload != "" && !captcha.Reload(input.CaptchaID) {
+		c.SendString("invalid captcha id")
+		return c.SendStatus(fiber.StatusBadRequest)
+	}
+
+	return c.SendStatus(fiber.StatusOK)
 }
