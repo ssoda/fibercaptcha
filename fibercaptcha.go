@@ -53,5 +53,10 @@ func resolveCaptcha(c *fiber.Ctx) error {
 		return c.SendStatus(fiber.StatusBadRequest)
 	}
 
+	c.Set(fiber.HeaderCacheControl, "no-cache, no-store, must-revalidate")
+	c.Set(fiber.HeaderPragma, "no-cache")
+	c.Set(fiber.HeaderExpires, "0")
+	c.Set(fiber.HeaderContentType, "image/png")
+
 	return c.SendStatus(fiber.StatusOK)
 }
