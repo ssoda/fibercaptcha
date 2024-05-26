@@ -1,6 +1,8 @@
 package fibercaptcha
 
 import (
+	"fmt"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/ssoda/captcha"
 )
@@ -44,13 +46,19 @@ func resolveCaptcha(c *fiber.Ctx) error {
 	}
 
 	if input.CaptchaID == "" {
-		c.SendString("captcha id required")
+		c.SendString("captcha id required.")
 		return c.SendStatus(fiber.StatusBadRequest)
 	}
 
 	if input.Reload != "" && !captcha.Reload(input.CaptchaID) {
-		c.SendString("invalid captcha id")
+		c.SendString("invalid captcha id.")
 		return c.SendStatus(fiber.StatusBadRequest)
+	}
+
+	err := captcha.WriteImage(c.Response().BodyWriter(), input.CaptchaID, 0, 0)
+	if err != nil {
+		c.SendString(fmt.Sprintf("write captcha image failed. err: %v", err))
+		return c.SendStatus(fiber.StatusInternalServerError)
 	}
 
 	c.Set(fiber.HeaderCacheControl, "no-cache, no-store, must-revalidate")
