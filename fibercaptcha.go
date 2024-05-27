@@ -25,7 +25,7 @@ func New(config ...*Config) fiber.Handler {
 			return retrieveCaptchaID(c, cfg.DefaultLen)
 		}
 		if c.Path() == cfg.ResolveCaptchaPath {
-			return resolveCaptcha(c)
+			return resolveCaptcha(c, cfg.StdWidth, cfg.StdHeight)
 		}
 
 		return c.Next()
@@ -39,7 +39,7 @@ func retrieveCaptchaID(c *fiber.Ctx, captchaLen int) error {
 	})
 }
 
-func resolveCaptcha(c *fiber.Ctx) error {
+func resolveCaptcha(c *fiber.Ctx, captchaWidth int, captchaHeight int) error {
 	input := new(resolveCaptchInput)
 	if err := c.QueryParser(input); err != nil {
 		return c.SendStatus(fiber.StatusBadRequest)
@@ -55,7 +55,7 @@ func resolveCaptcha(c *fiber.Ctx) error {
 		return c.SendStatus(fiber.StatusBadRequest)
 	}
 
-	err := captcha.WriteImage(c.Response().BodyWriter(), input.CaptchaID, 0, 0)
+	err := captcha.WriteImage(c.Response().BodyWriter(), input.CaptchaID, captchaWidth, captchaHeight)
 	if err != nil {
 		c.SendString(fmt.Sprintf("write captcha image failed. err: %v", err))
 		return c.SendStatus(fiber.StatusInternalServerError)
