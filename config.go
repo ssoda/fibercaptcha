@@ -57,11 +57,11 @@ func configDefault(config ...*Config) *Config {
 	// Override default config
 	cfg := config[0]
 
-	if cfg.DefaultLen == 0 {
+	if cfg.DefaultLen <= 0 {
 		cfg.DefaultLen = ConfigDefault.DefaultLen
 	}
 
-	if cfg.CollectNum == 0 {
+	if cfg.CollectNum <= 0 {
 		cfg.CollectNum = ConfigDefault.CollectNum
 	}
 
@@ -69,11 +69,11 @@ func configDefault(config ...*Config) *Config {
 		cfg.Expiration = ConfigDefault.Expiration
 	}
 
-	if cfg.StdHeight == 0 {
+	if cfg.StdHeight <= 0 {
 		cfg.StdHeight = ConfigDefault.StdHeight
 	}
 
-	if cfg.StdWidth == 0 {
+	if cfg.StdWidth <= 0 {
 		cfg.StdWidth = ConfigDefault.StdWidth
 	}
 
