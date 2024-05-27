@@ -1,6 +1,7 @@
 package fibercaptcha
 
 import (
+	"encoding/json"
 	"io"
 	"net/http/httptest"
 	"testing"
@@ -21,10 +22,14 @@ func TestNew(t *testing.T) {
 		require.Equal(t, fiber.StatusOK, resp1.StatusCode)
 
 		body1, _ := io.ReadAll(resp1.Body)
-		t.Log(string(body1))
+		var retrieveCaptchaIDOutput retrieveCaptchaIDOutput
+		unmarshalErr := json.Unmarshal(body1, &retrieveCaptchaIDOutput)
+		if unmarshalErr != nil {
+			t.Fatal("cannot unmarshal retrieve captcha id output", unmarshalErr)
+		}
 
-		r2 := httptest.NewRequest(fiber.MethodGet, ConfigDefault.ResolveCaptchaPath, nil)
+		r2 := httptest.NewRequest(fiber.MethodGet, ConfigDefault.ResolveCaptchaPath+"?captcha_id="+retrieveCaptchaIDOutput.CaptchaID, nil)
 		resp2, _ := app.Test(r2, -1)
-		require.Equal(t, fiber.StatusBadRequest, resp2.StatusCode)
+		require.Equal(t, fiber.StatusOK, resp2.StatusCode)
 	})
 }
