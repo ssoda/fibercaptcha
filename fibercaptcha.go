@@ -14,6 +14,7 @@ type retrieveCaptchaIDOutput struct {
 type resolveCaptchInput struct {
 	CaptchaID string `query:"captcha_id"`
 	Reload    string `query:"reload"`
+	Lang      string `query:"lang"`
 }
 
 func New(config ...*Config) fiber.Handler {
@@ -75,5 +76,31 @@ func resolveCaptchaImage(c *fiber.Ctx, captchaWidth int, captchaHeight int) erro
 }
 
 func resolveCaptchaAudio(c *fiber.Ctx) error {
-	return c.Next()
+	input := new(resolveCaptchInput)
+	if err := c.QueryParser(input); err != nil {
+		return c.SendStatus(fiber.StatusBadRequest)
+	}
+
+	if input.CaptchaID == "" {
+		c.SendString("captcha id required.")
+		return c.SendStatus(fiber.StatusBadRequest)
+	}
+
+	if input.Reload != "" && !captcha.Reload(input.CaptchaID) {
+		c.SendString("invalid captcha id.")
+		return c.SendStatus(fiber.StatusBadRequest)
+	}
+
+	err := captcha.WriteAudio(c.Response().BodyWriter(), input.CaptchaID, input.Lang)
+	if err != nil {
+		c.SendString(fmt.Sprintf("write captcha image failed. err: %v", err))
+		return c.SendStatus(fiber.StatusInternalServerError)
+	}
+
+	c.Set(fiber.HeaderCacheControl, "no-cache, no-store, must-revalidate")
+	c.Set(fiber.HeaderPragma, "no-cache")
+	c.Set(fiber.HeaderExpires, "0")
+	c.Set(fiber.HeaderContentType, "audio/x-wav")
+
+	return c.SendStatus(fiber.StatusOK)
 }
