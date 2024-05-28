@@ -24,8 +24,10 @@ type Config struct {
 	StdHeight int
 	// API path for retrieve captcha id
 	RetrieveCaptchaIDPath string
-	// API path for resolve captcha
-	ResolveCaptchaPath string
+	// API path for resolve captcha image
+	ResolveCaptchaImagePath string
+	// API path for resolve captcha audio
+	ResolveCaptchaAudioPath string
 	// logger
 	Logger *log.Logger
 	// redis client
@@ -37,15 +39,16 @@ type Config struct {
 }
 
 var ConfigDefault = &Config{
-	DefaultLen:            6,
-	CollectNum:            100,
-	Expiration:            10 * time.Minute,
-	StdWidth:              240,
-	StdHeight:             80,
-	RetrieveCaptchaIDPath: "/api/captcha/retrieve-id",
-	ResolveCaptchaPath:    "/api/captcha/resolve",
-	Logger:                log.New(os.Stderr, "", log.LstdFlags),
-	RedisCaptchaPrefix:    "captcha",
+	DefaultLen:              6,
+	CollectNum:              100,
+	Expiration:              10 * time.Minute,
+	StdWidth:                240,
+	StdHeight:               80,
+	RetrieveCaptchaIDPath:   "/api/captcha/retrieve-id",
+	ResolveCaptchaImagePath: "/api/captcha/resolve-image",
+	ResolveCaptchaAudioPath: "/api/captcha/resolve-audio",
+	Logger:                  log.New(os.Stderr, "", log.LstdFlags),
+	RedisCaptchaPrefix:      "captcha",
 }
 
 func configDefault(config ...*Config) *Config {
@@ -81,8 +84,12 @@ func configDefault(config ...*Config) *Config {
 		cfg.RetrieveCaptchaIDPath = ConfigDefault.RetrieveCaptchaIDPath
 	}
 
-	if cfg.ResolveCaptchaPath == "" {
-		cfg.ResolveCaptchaPath = ConfigDefault.ResolveCaptchaPath
+	if cfg.ResolveCaptchaImagePath == "" {
+		cfg.ResolveCaptchaImagePath = ConfigDefault.ResolveCaptchaImagePath
+	}
+
+	if cfg.ResolveCaptchaAudioPath == "" {
+		cfg.ResolveCaptchaAudioPath = ConfigDefault.ResolveCaptchaAudioPath
 	}
 
 	if cfg.Logger != nil {

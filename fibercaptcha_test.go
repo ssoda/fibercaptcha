@@ -28,8 +28,12 @@ func TestNew(t *testing.T) {
 			t.Fatal("cannot unmarshal retrieve captcha id output", unmarshalErr)
 		}
 
-		r2 := httptest.NewRequest(fiber.MethodGet, ConfigDefault.ResolveCaptchaPath+"?captcha_id="+retrieveCaptchaIDOutput.CaptchaID, nil)
+		r2 := httptest.NewRequest(fiber.MethodGet, ConfigDefault.ResolveCaptchaImagePath+"?captcha_id="+retrieveCaptchaIDOutput.CaptchaID, nil)
 		resp2, _ := app.Test(r2, -1)
 		require.Equal(t, fiber.StatusOK, resp2.StatusCode)
+
+		r3 := httptest.NewRequest(fiber.MethodGet, ConfigDefault.ResolveCaptchaAudioPath+"?captcha_id="+retrieveCaptchaIDOutput.CaptchaID, nil)
+		resp3, _ := app.Test(r3, -1)
+		require.Equal(t, fiber.StatusOK, resp3.StatusCode)
 	})
 }

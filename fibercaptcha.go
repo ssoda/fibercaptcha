@@ -24,8 +24,13 @@ func New(config ...*Config) fiber.Handler {
 		if c.Path() == cfg.RetrieveCaptchaIDPath {
 			return retrieveCaptchaID(c, cfg.DefaultLen)
 		}
-		if c.Path() == cfg.ResolveCaptchaPath {
-			return resolveCaptcha(c, cfg.StdWidth, cfg.StdHeight)
+
+		if c.Path() == cfg.ResolveCaptchaImagePath {
+			return resolveCaptchaImage(c, cfg.StdWidth, cfg.StdHeight)
+		}
+
+		if c.Path() == cfg.ResolveCaptchaAudioPath {
+			return resolveCaptchaAudio(c)
 		}
 
 		return c.Next()
@@ -39,7 +44,7 @@ func retrieveCaptchaID(c *fiber.Ctx, captchaLen int) error {
 	})
 }
 
-func resolveCaptcha(c *fiber.Ctx, captchaWidth int, captchaHeight int) error {
+func resolveCaptchaImage(c *fiber.Ctx, captchaWidth int, captchaHeight int) error {
 	input := new(resolveCaptchInput)
 	if err := c.QueryParser(input); err != nil {
 		return c.SendStatus(fiber.StatusBadRequest)
@@ -67,4 +72,8 @@ func resolveCaptcha(c *fiber.Ctx, captchaWidth int, captchaHeight int) error {
 	c.Set(fiber.HeaderContentType, "image/png")
 
 	return c.SendStatus(fiber.StatusOK)
+}
+
+func resolveCaptchaAudio(c *fiber.Ctx) error {
+	return c.Next()
 }
