@@ -104,3 +104,10 @@ func resolveCaptchaAudio(c *fiber.Ctx) error {
 
 	return c.SendStatus(fiber.StatusOK)
 }
+
+// VerifyString accepts a string of digits.  It removes
+// spaces and commas from the string, but any other characters, apart from
+// digits and listed above, will cause the function to return false.
+func VerifyString(id string, digits string) bool {
+	return captcha.VerifyString(id, digits)
+}
