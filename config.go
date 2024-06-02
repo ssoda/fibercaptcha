@@ -22,11 +22,11 @@ type Config struct {
 	StdWidth int
 	// Standard height of a captcha image.
 	StdHeight int
-	// API path for retrieve captcha id
+	// API path for retrieve captcha id.
 	RetrieveCaptchaIDPath string
-	// API path for resolve captcha image
+	// API path for resolve captcha image.
 	ResolveCaptchaImagePath string
-	// API path for resolve captcha audio
+	// API path for resolve captcha audio.
 	ResolveCaptchaAudioPath string
 	// logger
 	Logger *log.Logger
