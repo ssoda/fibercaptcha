@@ -25,10 +25,48 @@ func New(config ...*fibercaptcha.Config) fiber.Handler
 | ResolveCaptchaImagePath | `string`               | API path for resolve captcha image.                                                    | `/api/captcha/resolve-image`            |
 | ResolveCaptchaAudioPath | `string`               | API path for resolve captcha audio.                                                    | `/api/captcha/resolve-audio`            |
 | Logger                  | `*log.Logger`          | logger                                                                                 | `log.New(os.Stderr, "", log.LstdFlags)` |
-| RedisClient             | `*redis.Client`        | redis cliend                                                                           |                                         |
+| RedisClient             | `*redis.Client`        | redis client                                                                           |                                         |
 | RedisClusterClient      | `*redis.ClusterClient` | redis cluster client                                                                   |                                         |
 | RedisCaptchaPrefix      | `string`               | redis captcha key prefix                                                               | `captcha`                               |
 
 ## Examples
 
-##
+Installation
+```
+go get -u github.com/ssoda/fibercaptcha
+```
+
+Import package
+```
+import (
+    github.com/ssoda/fibercaptcha
+)
+```
+
+Use default config
+```
+app.Use(fibercaptcha.New(&fibercaptcha.Config{}))
+```
+
+Call the default retrieve captcha id route to get captcha id
+```
+/api/captcha/retrieve-id
+```
+
+Call the resolve captcha route with captcha id (assume that the captcha id is `CAPTCHA_ID`)
+```
+/api/captcha/resolve-image?captcha_id=CAPTCHA_ID
+```
+
+When you need to reload the image
+```
+/api/captcha/resolve-image?captcha_id=CAPTCHA_ID&reload=true
+```
+
+Verify the captcha digit in your login API or something auth function (assume that digit is `123456`)
+```
+isValid := fibercaptcha.VerifyString("CAPTCHA_ID", "123456")
+if !isValid {
+    return ...
+}
+```
