@@ -63,6 +63,8 @@ When you need to reload the image
 /api/captcha/resolve-image?captcha_id=CAPTCHA_ID&reload=true
 ```
 
+Example implemented on HTML please refer to [fiber-demo](https://github.com/ssoda/fiber-demo/blob/main/views/index.html)  
+
 Verify the captcha digit in your login API or something auth function (assume that digit is `123456`)
 ```
 isValid := fibercaptcha.VerifyString("CAPTCHA_ID", "123456")
